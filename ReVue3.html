@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex-ReVue-3</title>
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <h2>直接用msg寫在裡面</h2>
+            <p>{{msg.split('').reverse().join('')}}</p>
+        </div>
+        <hr style="border:1px  dotted;width:80%;margin-left:0px">
+        <div>
+            <h2>使用computed(邏輯跟畫面分開)</h2>
+            <ul>
+                <li>computed使用時機:用資料產生資料的時候、跟資料有連動的時候</li>
+                <li>若資料複雜性、邏輯複雜度、跟重用性不高的時候,就要謹慎考慮</li>
+            </ul>
+            <p>{{reversedMessage}}</p>
+            <p style="color:blue">現在時間(compted) : {{m1}}</p>
+        </div>
+        <div>
+            <h2>使用methods(邏輯跟畫面分開)</h2>
+            <p>{{reversedMessage1()}}</p>
+            <!-- <p>{{reversedMessage2()}}</p> -->
+            <h2 style="color:red">computed(屬性也就是資料)優於 methods(function使用時要呼叫)</h2>
+        </div>
+        <h1>Set</h1>
+
+        <h2>{{newMsg}}</h2>
+    </div>
+    <hr style="border:2px red dotted">
+    <h1>Watch</h1>
+    <ul>
+        <li>watch => 資料產生後,透過產生的資料去去得API的資料或是呼叫其他function時,就可使用watch</li>
+        <li>可以用其他的功能時,可以不要用watch</li>
+        <li>該用當用，當是一個行為時才用watch</li>
+    </ul>
+    <hr style="border:2px red dotted">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+        Vue.config.devtools = true;
+    </script>
+    <script>
+        let vm = new Vue({
+            el: "#app",
+            data: {
+                msg: "Hello World!!!"
+            },
+            computed: { // a computed getter
+                newMsg: {
+                    get() {
+                        console.log('newMsg-Get')
+                        return "New - " + this.msg
+                    },
+                    set(val) {
+                        this.msg = val + "- New"
+                    }
+                },
+                reversedMessage: function() {
+                    console.log('computed')
+                        // `this` points to the vm instance
+                    return this.msg.split('').reverse().join('')
+                },
+                m1() {
+                    console.log("M1")
+                    return this.msg + "--" + Date.now()
+                        // return Date.now()
+                },
+                m2() {
+                    console.log("M2")
+                    return this.m1 + 1
+                },
+
+            },
+            methods: {
+                // a computed getter
+                reversedMessage1: function() {
+                    // `this` points to the vm instance
+                    console.log('methods1')
+                    return this.msg.split('').reverse().join('')
+                },
+                reversedMessage2: function() {
+                    // `this` points to the vm instance
+                    console.log('methods2')
+                    console.log(this.msg.split('').reverse().join(''))
+                }
+            },
+
+        })
+    </script>
+</body>
+
+</html>

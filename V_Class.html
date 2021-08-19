@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>V-Class</title>
+    <style>
+        .wrap {
+            margin: 50px;
+            bottom: 2px blue solid;
+        }
+        
+        .box {
+            transition: transform .5s;
+            width: 100px;
+            height: 100px;
+            background-color: blue;
+        }
+        
+        .box.rotate {
+            transform: rotate(45deg);
+        }
+        
+        button {
+            margin: 100px
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrap">
+        <h1>動態切換 Class Name</h1>
+        <div id=app>
+            <!-- <div class="box" :class={'要加入的 Class NAme':'判斷式'}></div> -->
+            <div class="box" :class="{ 'rotate': isTransform}"></div>
+            <!-- <hr> -->
+            <button class="btn btn-outline-primary" @click="isTransform= !isTransform">旋轉物件</button>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <h1> Computed 運算功能</h1>
+        <div id="computed">
+
+            <input type="text" class="form-control" v-model="text ">
+            <div>
+                {{ text.split('').reverse().join('')}}
+            </div>
+
+            {{reverseText}}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14 "></script>
+    <script>
+        Vue.config.devtools = true;
+    </script>
+    <!--- 顯示Vue的開發者工具-->
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                isTransform: false
+            },
+        });
+    </script>
+    <script>
+        var computed = new Vue({
+            el: '#computed',
+            data: {
+                text: '',
+                newText: ''
+            },
+            computed: {
+                reverseText: function() {
+                    return this.text.split('').reverse().join('');
+                }
+            }
+        });
+    </script>
+</body>
+
+
+
+
+</html>

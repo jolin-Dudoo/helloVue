@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Vue-指令大全</title>
+</head>
+
+<body>
+
+    <div id="showData">
+        <h3>現在時間: {{currentDate}}
+        </h3>
+        <h1>原始陣列</h1>
+
+        <pre>{{nameList}}</pre>
+        <hr>
+        <h1>v-for 陣列</h1>
+        <ul>
+            <li v-for="item in nameList">
+                這位是 {{item.name}} 年齡是 {{item.age}} 體重是{{item.weight}}
+            </li>
+        </ul>
+        <hr>
+        <h1>v-for 陣列 - 加上索引 (自定義變數)</h1>
+        <p>index  為自定義名稱,顯示索引的序號,索引由0開始,若要從1則要加上 1</p>
+        <ul>
+            <li v-for="(item,index) in nameList">
+                這位是第 {{index+1}} 位- {{item.name}} 年齡是 {{item.age}} 體重是{{item.weight}}
+            </li>
+        </ul>
+        <hr>
+        <h1> v-if 條件式</h1>
+        <p> 當條件成立時才顯示資料</p>
+        <ul>
+            <li v-for="(item,index) in nameList" v-if="item.weight>=60">
+                這位是第 {{index+1}} 位- {{item.name}} 年齡是 {{item.age}} 體重是{{item.weight}}
+            </li>
+        </ul>
+        <hr>
+    </div>
+    <div id="truefalse">
+        <h1> 簡單的範例(v-if) </h1>
+        <div v-for="item in myData" v-if="item.status">
+            <h2>顯示結果(v-if:工具裡看不到不顯示的元素) : {{item.message}} </h2>
+        </div>
+        <div v-for="item in myData" v-show="item.status">
+            <h2>顯示結果(v-show:工具裡看得到不顯示的元素,保持原來的結構) : {{item.message}} </h2>
+        </div>
+        <hr>
+    </div>
+    <div id="ifelse">
+        <h1>成績計算(if-else)</h1>
+        <p> v-model : 動態更新資料</p>
+        <h3>請輸入你的成績 :</h3>
+        <input type="text" v-model="score">
+        <h1 class="perfect" v-if="score>=90 "> 你超級優秀的啦</h1>
+        <h1 class="pass" v-if="score <90 && score>=60"> 恭喜你及格了 </h1>
+        <h1 class="fail" v-if="score<60"> 很遺憾的你不及格 </h1>
+    </div>
+    <hr>
+    <div id="click">
+        <h1>按下觸發(v-on)</h1>
+        <p> v-on:click==> 按下元件時會觸發的動作</p>
+        <div v-on:click="myclick">有種按按看!</div>
+    </div>
+
+    <div id="click-2">
+        <h1>按下觸發(v-on)-應用 </h1>
+        <p> v-on:click==> 右鍵按下元件時會觸發的動作</p>
+        <div v-for="item in namelist" v-on:click.right="who(item.name)">
+            <ul>
+                <li>{{item.name}}</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script>
+        Vue.config.devtools = true;
+    </script>
+    <!--- 顯示Vue的開發者工具-->
+    <script>
+        var newarray = new Vue({
+            el: '#showData',
+            data: {
+                currentDate: new Date(),
+                nameList: [{
+                    name: 'Amy',
+                    age: 20,
+                    weight: 60
+                }, {
+                    name: 'Peter',
+                    age: 35,
+                    weight: 95
+                }, {
+                    name: 'Allen',
+                    age: 40,
+                    weight: 85
+                }, {
+                    name: 'Kathy',
+                    age: 18,
+                    weight: 55
+                }, ]
+            }
+        })
+
+        var showData = new Vue({
+            el: "#truefalse",
+            data: {
+                myData: [{
+                    message: "我要被顯示",
+                    status: true
+                }, {
+                    message: "我不應該被顯示",
+                    status: false
+                }]
+
+            }
+
+        })
+
+        var ifelse = new Vue({
+            el: "#ifelse",
+            data: {
+                message: "請輸入你的分數 ",
+                score: 60,
+            }
+        })
+
+        var click = new Vue({
+            el: "#click",
+            methods: {
+                myclick: function() {
+                    alert('你按到我了!')
+                }
+            }
+        })
+
+        var click2 = new Vue({
+            el: "#click-2",
+            data: {
+                namelist: [{
+                    name: "Peter",
+                    job: "Manager",
+                    score: 80
+                }, {
+                    name: "Amy",
+                    job: "PM",
+                    score: 95
+                }, {
+                    name: "Cathy",
+                    job: "Designer",
+                    score: 100
+                }]
+            },
+
+            methods: {
+                who: function(name) {
+                    alert('這位是 - ' + name)
+                }
+
+            }
+        })
+    </script>
+</body>
+
+
+
+
+</html>

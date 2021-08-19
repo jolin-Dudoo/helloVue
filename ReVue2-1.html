@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex-ReVue-3</title>
+</head>
+
+<body>
+
+    <div id="app">
+        <h1>直接套用template</h1>
+
+    </div>
+
+    <div id="app2">
+        <h1>利用$mount</h1>
+
+    </div>
+    <hr>
+
+    <h1>computed / methods</h1>
+    <div id="sample">
+        輸入訊息 : {{msg}}
+        <p style="color:blue">Computed reversed message: "{{ reversedMessage }}"</p>
+        <p style="color:green">methods reversed message: " {{ reversedMessage2() }}"</p>
+    </div>
+
+    <div id="sample-Data">
+        {{myTitle}}
+        <img v-bind:src="src" alt="">
+        <img :src="src" alt="">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js "></script>
+    <script>
+        Vue.config.devtools = true;
+    </script>
+    <script type="text/x-template " id="myTemplate">
+        <div>
+            <h1 style="color:red ">Hello This from scrip area-use tempate</h1>
+        </div>
+    </script>
+
+    <script type="text/x-template " id="myTemplate2">
+        <div>
+            <h1 style="color:green ">Hello This from scrip area-for mount</h1>
+        </div>
+    </script>
+    <!-- <script>
+        let sample = new Vue({
+            el: "#Tag ",
+            data: {},
+            computed: {},
+            methods: {
+
+            },
+
+        })
+    </script> -->
+
+    <script>
+        let vm = new Vue({
+            el: "#app ",
+            template: "#myTemplate"
+        })
+
+        let vm2 = new Vue({
+            template: "#myTemplate2"
+        })
+        vm2.$mount("#app2")
+    </script>
+
+    <script>
+        const myvm = new Vue({
+            el: "#sample ",
+            data: {
+                msg: "Show Me The Money!!!"
+            },
+            computed: {
+                reversedMessage() {
+                    return this.msg.split('').reverse().join('')
+                }
+            },
+            methods: {
+                reversedMessage2() {
+                    return this.msg.split('').reverse().join('')
+                }
+            },
+
+        })
+    </script>
+
+    <script>
+        let dataA = {
+            myTitle: "手牽手吃蘋果，我們都是好朋友",
+            src: 'https://picsum.photos/640/480?grayscale'
+        }
+
+        let Test = new Vue({
+            el: "#sample-Data",
+            data: dataA
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Hello Vue</title>
+</head>
+
+<body>
+    <h1>Hello Vue</h1>
+    <div>
+        <h1>Vue 初體驗</h1>
+        <div id="app">
+            <div class="box">
+                <h2>{{message}}</h2>
+            </div>
+        </div>
+
+        <div class="test">
+            <div class="box">
+                <h2>{{message}}</h2>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div id="inputtest">
+        <div><input type="text" v-model="myinput"></div>
+        <div>input Data is : [ {{myinput}} ]</div>
+        <div>用[v-text]寫在 Tag 當中 :
+            <div v-text="myinput"> </div>
+        </div>
+        <div>用[v-html]寫在 Tag 當中 :
+            <div v-html="myinput2"></div>
+        </div>
+    </div>
+    <hr>
+    <div>
+        <h1>Vue 的計算功能</h1>
+        <div id="BMI">
+            <p>Name - {{ name }}</p>
+            <p>BMI - {{weight /((height) * (height))}}</p>
+
+        </div>
+    </div>
+    <hr>
+    <div>
+        <h1>插入圖片</h1>
+        <div id="insertImg">
+            <img v-bind:src="imgSrc" v-bind:class="className" alt="">
+            <img src="https://picsum.photos/200/300?grayscale" alt="">
+        </div>
+
+        
+    </div>
+
+    <script type="text/template">
+        <div id="">
+
+        </div>
+        </template>
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script>
+        Vue.config.devtools = true;
+    </script>
+    <!--- 顯示Vue的開發者工具-->
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                message: "Hello Vue"
+            },
+            template: "#showmehtml"
+
+        })
+
+        var app = new Vue({
+            el: ".test",
+            data: {
+                message: "Hello Vue Second"
+            }
+
+        })
+
+        var inputdata = new Vue({
+            el: '#inputtest',
+            data: {
+                myinput: 'please input',
+                myinput2: '<h2 class = "type2" > Please input date </h2>'
+
+            }
+        })
+
+        var insetimg = new Vue({
+            el: insertImg,
+            data: {
+                imgSrc: 'https://picsum.photos/200/300?grayscale',
+                className: 'localimg'
+            }
+        })
+
+        var BMI = new Vue({
+            el: '#BMI',
+            data: {
+                name: "Jo",
+                weight: 67,
+                height: 161.5 / 100
+            }
+        })
+    </script>
+</body>
+
+
+
+
+</html>

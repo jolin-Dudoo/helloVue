@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 練習 - TODO List(this的應用 ）</title>
+    <style>
+        .listView-item {
+            display: flex;
+        }
+        
+        .listview-All {
+            color: red;
+            border: 2px dotted blue;
+            max-width: 800px
+        }
+        
+        .listview-input {
+            max-width: 800px
+        }
+        
+        .wrap {
+            max-width: 60%;
+            display: flex;
+            border: 1px dotted red
+            /* flex-direction: column; */
+        }
+        
+        .wrap-2 {
+            display: flex;
+            justify-content: space-around;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="todo">
+        <div class="wrap">
+            <div>
+                <input type="text" placeholder="請輸入代辦事項" v-model="newTodo" v-on:keyup.enter="addTodo(newTodo)">
+            </div>
+            <div class="wrap-2">
+                <div class="listview-input">
+                    <h3>輸入內容</h3>
+                    <ul>
+                        <li class="listView-item" v-for="item in todoitems">
+                            {{ item.content}} -
+                            <div v-on:click.prevent="removeTodo(item)">刪除</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="listview-All">
+                    <h2> 目前的 代辦事項</h2>
+                    <ul>
+                        <li v-for="item in todoitems">
+                            {{item.content}}
+
+                        </li>
+                    </ul>
+                </div>
+                <div class="listview-All">
+                    <h2> 原始陣列</h2>
+                    <pre>  {{this.todoitems}} </pre>
+                    <!-- <ul>
+                        <li v-for="item in todoitems">
+                            {{item.content}}
+
+                        </li>
+                    </ul> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script>
+        Vue.config.devtools = true;
+    </script>
+    <script>
+        var app = new Vue({
+            el: '#todo',
+            data: {
+                todoitems: [],
+                newTodo: ''
+            },
+            methods: {
+                addTodo: function(todo) {
+                    this.todoitems.push({
+                        content: todo,
+                        completed: false
+                    })
+                },
+                removeTodo: function(todo) {
+                    this.todoitems.splice(this.todoitems.indexOf(todo), 1)
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>

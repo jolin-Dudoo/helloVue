@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex-ReVue-7 雙向資料綁定</title>
+</head>
+
+<body>
+    <div class="wrap" id="app">
+        <h1>Test</h1>
+        <div v-for="content of pageList">
+            <!-- {{content}} -->
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <!-- <script>
+        Vue.config.devtools = true;
+    </script> -->
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                list: ["高雄火車站", "中央公園", "三多商圈", "獅甲", "凱旋", "前鎮高中", "草衙", "高雄國際機場", "小港"],
+                perPage: 4,
+                nowPage: 0
+            },
+            computed: {
+                pageList() {
+                    let startPage = (this.nowPage - 1) * 4
+                    pageList = this.list.slice(startPage, startPage + this.perPage) //起始頁面:Start 結束：起始頁面+分割後數量
+                    console.log(this.nowPage + "/" + pageList)
+                    return pageList
+                }
+            }
+
+        })
+    </script>
+
+</body>
+
+</html>

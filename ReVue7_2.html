@@ -5,40 +5,236 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alex-ReVue-7 雙向資料綁定(Form)</title>
+    <title>Alex-ReVue-7 雙向資料綁定(Form 表單資料處理)</title>
 </head>
 
 <body>
     <div class="wrap" id="app">
-        <h1>Alex-ReVue-7 雙向資料綁定(畫面影響資料-Input Form input biding)</h1>
-
+        <!-- 中文 -->
+        <h1>Alex-ReVue-7 雙向資料綁定(Form 表單資料處理)</h1>
+        <p><input type="text" v-model="showText" /></p>
+        <textarea type="text" v-model="showText"></textarea>
+        <p>Your Input: {{showText}}</p>
+        <hr>
     </div>
-
+    
     <div id="app2">
-
+        <p><input type="checkbox"> 同意使用(未綁定)</p>
+        <p><input type="checkbox" v-model="accepted"> 同意使用(資料綁定)</p>
+        current Status: {{currentStatus}}
+        <hr>
+    </div>
+    <div id="app3">
+        <h2>Check Box1 - 多選(checkbox)-改變 check item 狀態</h2>
+        <p> check box的應用 : 1.選或不選 2. 選擇順序</p>
+        <div v-for="area of areaLists">
+            <input type="checkbox" id="area.id" value="area.id " v-model="area.status">
+            <!-- 不為0的數字 都會被視為True -->
+            <!-- <input type="checkbox" id="area.id" value="area.id " v-model="area.check"> -->
+            <label for="area.id">{{area.name}}</label>
+        </div>
+        <h2>Check Box2 - 多選(checkbox)-塞到陣列</h2>
+        <div v-for="area of areaLists">
+            <!-- 
+                陣列 checkItems 是儲存多選的資料，
+                資料排序會根據選擇順序，進行排序
+            -->
+            <input type="checkbox" :id="area.id" :value="area.name " v-model="checkItems" />
+            <label for="area.id">{{area.name}}</label>
+        </div>
+        <div>{{checkItems}}</div>
+        <hr>
+        <h2>Check Box3 - 多選(checkbox)-塞到陣列2</h2>
+        <div v-for="(area,index) of areaLists">
+            <input type="checkbox" :id="area" :value="area.name" v-model="checked" />
+            <label for="area.id">{{area.name}}</label>
+        </div>
+        {{sortchecked}}
+        <hr>
+    </div>
+    <div id="app4">
+        <h2>Check Box - 單選(radio)</h2>
+        <p><input type="radio" value="0" v-model="gender">Men</p>
+        <p><input type="radio" value="1" v-model="gender">Female</p>
+        <p><input type="radio" value="2" v-model="gender">Cross</p>
+        <p><input type="radio" value="3" v-model="gender"> Keep</p>
+        <hr>
+        <!-- 所有form表回傳的value都是"字串
+            要回傳數字，就要用v-model.number
+            " -->
+        <div v-for="type of typeLists">
+            <input type="radio" :value="type.value" v-model.number="selected">
+            <label for="type.id">{{type.name}}</label>
+        </div>
+        您的選擇是 : {{selected}}
+        <hr>
+        <!-- 防止使用者不小心輸入前後空白，可用v-mopdel.trim
+            " -->
+        <div>
+            v-model.trim : <input type="text" v-model.trim="myStr" id="textArea2" />
+        </div>
+        <div>
+            v-model:
+            <p><textarea name="textArea1" id="textArea1" v-model="myStr"></textarea></p>
+        </div>
+        <p> your Input : {{myStr}}</p>
+        <hr>
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <div id="app5">
+        <h2>Selected</h2>
+        <select v-model.number="selected">
+            <option disabled value="">Please Select one...</option>
+            <option :value="item.value" v-for="item of sItems">{{item.name}}</option>
+        </select>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js ">
+    </script>
     <!-- <script>
         Vue.config.devtools = true;
     </script> -->
     <script>
         new Vue({
-            el: "#app",
+                el: "#app ",
+                data: {
+                    showText: "Hello Vue , this is my First case ",
+                },
+            }),
+            new Vue({
+                el: "#app2 ",
+                data: {
+                    accepted: true
+                },
+                computed: {
+                    currentStatus() {
+                        if (this.accepted) {
+                            return "同意 "
+                        } else {
+                            return "不同意 "
+
+                        }
+                    }
+                }
+            }),
+            new Vue({
+                el: "#app3",
+                data: {
+                    checkItems: [],
+                    checkLists: [],
+                    checked: [],
+                    checkArea: [],
+                    areaLists: [{
+                        id: "sanmin ",
+                        name: "三民區 ",
+                        status: false,
+                        check: "sanmin "
+                    }, {
+                        id: "cianjhen ",
+                        name: "前鎮區 ",
+                        status: false,
+                        check: "cianjhen "
+                    }, {
+                        id: "siaogang ",
+                        name: "小港區 ",
+                        status: false,
+                        check: "siaogan "
+                    }, {
+                        id: "sinsing ",
+                        name: "新興區 ",
+                        status: false,
+                        check: "sinsing "
+                    }, {
+                        id: "cianjin ",
+                        name: "前金區 ",
+                        status: false,
+                        check: "cianjin "
+                    }, {
+                        id: "yancheng ",
+                        name: "鹽埕區 ",
+                        status: false,
+                        check: "yancheng "
+                    }, {
+                        id: "zuoying ",
+                        name: "左營區 ",
+                        status: false,
+                        check: "zuoying"
+                    }, {
+                        id: "lingya ",
+                        name: "苓雅區 ",
+                        status: false,
+                        check: "lingya"
+                    }, {
+                        id: "fongshan ",
+                        name: "鳳山區 ",
+                        status: true,
+                        check: "zuoying"
+                    }, ]
+                },
+                computed: {
+                    sortcheckLists() {
+                        return this.checkLists.sort()
+                    },
+                    sortchecked() {
+                        return this.checked.sort()
+                    },
+                    sortName() {
+                        for (let item = 0; item < this.areaLists.length; item++) {
+                            this.checkLists.push(this.areaLists[item].id)
+                            console.log(item + "==" + this.areaLists[item].id)
+                        }
+                        return this.checkLists
+                    }
+                }
+            })
+        new Vue({
+            el: "#app4",
             data: {
-
-            },
-            // 資料產資料用Computed
-            computed: {
-
-            },
-            methods: {
+                gender: 1,
+                selected: 1,
+                myStr: "Hello Vue",
+                typeLists: [{
+                    id: 'A',
+                    name: "自用",
+                    value: "0",
+                }, {
+                    id: 'B',
+                    name: "租賃",
+                    value: "1",
+                }, {
+                    id: 'C',
+                    name: "其他",
+                    value: "2",
+                }]
+            }
+        })
+        new Vue({
+            el: "#app5",
+            data: {
+                titleText: "123",
+                selected: "",
+                sItems: [
+                    //     {
+                    //     value: "",
+                    //     status: "disabled",
+                    //     name: "Please Select one..."
+                    // }, 
+                    {
+                        value: "0",
+                        status: "",
+                        name: "天氣"
+                    }, {
+                        value: "1",
+                        status: "",
+                        name: "氣溫"
+                    }, {
+                        value: "2",
+                        status: "",
+                        name: "紫外線"
+                    }
+                ]
 
             }
-
-
-
-        }, )
+        })
     </script>
 
 </body>

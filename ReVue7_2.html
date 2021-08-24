@@ -5,24 +5,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alex-ReVue-7 雙向資料綁定-1</title>
+    <title>Alex-ReVue-7 雙向資料綁定(Form)</title>
 </head>
 
 <body>
     <div class="wrap" id="app">
-        <h1>Alex-ReVue-7 雙向資料綁定</h1>
-        <div v-for="content of pageList">
-            {{content}}
-        </div>
-        <div>
-            <button v-show="nowPage>1" @click="switchPage(-1)">Prev</button>
-            <button v-show="nowPage < totalPage" @click="switchPage(+1)">Next</button>
-        </div>
-        <hr>
-        <div>
-            <p>now Page: {{nowPage}}</p>
-            <p>Total Page:{{totalPage}}</p>
-        </div>
+        <h1>Alex-ReVue-7 雙向資料綁定(畫面影響資料-Input Form input biding)</h1>
+
     </div>
 
     <div id="app2">
@@ -37,54 +26,19 @@
         new Vue({
             el: "#app",
             data: {
-                list: ["高雄火車站", "中央公園", "三多商圈", "獅甲", "凱旋", "前鎮高中", "草衙", "高雄國際機場", "小港", "後驛", "凹子底", "巨蛋",
-                    "都會公園"
-                ],
-                perPage: 4,
-                nowPage: 1
+
             },
             // 資料產資料用Computed
             computed: {
-                pageList() {
-                    console.log("NowPage: " + this.nowPage)
-                    let startPage = (this.nowPage - 1) * this.perPage
-                        // console.log("StartPage: " + startPage)
-                        // pageList = this.list.slice(startPage, startPage + this.perPage) //起始頁面:Start 結束：起始頁面+分割後數量
-                        // console.log(this.nowPage + "/" + pageList)
-                        // return pageList
-                    return this.list.slice(startPage, startPage + this.perPage)
-                },
-                totalPage() {
-                    //計算總頁數
-                    console.log("TotalPage:" + this.pageList.length)
-                    return Math.ceil(this.pageList.length) //計算總頁數
-                }
+
             },
             methods: {
-                switchPage(direct) {
-                    let page = this.nowPage + direct;
-                    // 當Page <1 則顯示1 , 當Page>TotalPage 顯示TotalPage , 否則顯示page 
-                    // page:頁數 totalPage:所有頁面 
 
-                    this.nowPage = page < 1 ? 1 : page > this.totalPage ? this.totalPage : page
-                    console.log("NowPage:" + this.nowPage)
-                    return this.nowPage
-                        // if (page < 1) {
-                        //     this.nowPage = 1
-                        // } else if (page > totalPage) {
-                        //     this.totalPage = totalPage
-                        // } else {
-                        //     this.nowPage = page
-                        // }
-
-                }
             }
 
 
 
-        }, {
-            el: "#app2"
-        })
+        }, )
     </script>
 
 </body>

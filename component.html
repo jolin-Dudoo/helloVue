@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Vue-元件</title>
+    <style>
+        .wrap {
+            margin: 50px;
+            bottom: 2px blue solid;
+        }
+        
+        .box {
+            transition: transform .5s;
+            width: 100px;
+            height: 100px;
+            background-color: blue;
+        }
+        
+        .box.rotate {
+            transform: rotate(45deg);
+        }
+        
+        button {
+            background-color: cadetblue;
+            color: cornsilk;
+            padding: 10px;
+            margin: 10px
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h3>您已經點擊了<button @click="counter+=1">{{counter}}</button>下</h3>
+        <h3>您已經點擊了<button @click="counter+=1">{{counter}}</button>下</h3>
+        <hr>
+        <h3>
+            <counter-component></counter-component>
+
+            <counter-component></counter-component>
+            <counter-component></counter-component>
+        </h3>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14 "></script>
+    <script>
+        Vue.config.devtools = true;
+    </script>
+    <!--- 顯示Vue的開發者工具-->
+    <script>
+        //  建立元件
+        // Vue.component('物件名稱',  {})
+        // finction  當中要 return的資料
+        Vue.component('counter-component', {
+            data: function() {
+                return {
+                    counter: 0
+                }
+            },
+            // 下面這個是反引號,在數字鍵1的旁邊
+            template: `<h3>您已經點擊了<button @click="counter+=1">{{counter}}</button>下</h3>
+       `
+        });
+
+
+        //   新增 veu的程式
+        var app = new Vue({
+            el: '#app',
+            data: {
+                counter: 0
+            }
+        })
+    </script>
+</body>
+
+
+
+
+</html>

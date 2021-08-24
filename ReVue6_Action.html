@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex-ReVue-6 事件</title>
+</head>
+
+<body>
+    <div id="app">
+        <section id="Case1">
+            <button v-on:click="count-=1">-1</button>
+            <button v-on:click="count+=1">+1</button>
+            <h1>{{count}}</h1>
+        </section>
+        <hr>
+        <!-- Tab 切換 -->
+        <section id="Case2">
+            <button v-for="num of items" @click="count2=num-1">{{num-1}}</button>
+            <h1>{{count2}}</h1>
+        </section>
+
+
+        <hr>
+        <!-- 抽換內容-->
+        <section id="Case3">
+            <div>
+                <h1>Case3-使用直接抽換</h1>
+                <button v-for="(content,index) of contents" @click="count3=index">{{index}}</button>
+                <p>目前Index : {{count3}}</p>
+                <h1>{{contents[count3]}}</h1>
+            </div>
+        </section>
+        <hr>
+        <section id="Case4">
+            <div>
+                <h1>Case4-使用V-show(切換成本較低)</h1>
+                <button v-for="(content,index) of contents" @click="count4=index">{{index}}</button>
+                <h1 v-for="(content,index) of contents" v-show="index==count4">{{content}}</h1>
+            </div>
+        </section>
+        <hr>
+        <section id="Case5">
+            <h1>Case5-click 呼叫method </h1>
+            <div><button @click="clickHandler">click me!</button></div>
+        </section>
+        <section id="Case6-1">
+            <h1>Case6-1 參數傳遞-A</h1>
+            <input v-for="(content,index) of contents" type="button" :value=content @click="clickHandler" :data-index="index">
+        </section>
+        <section id="Case6-1">
+            <h1>Case6-1 參數傳遞-B</h1>
+            <input v-for="(content,index) of contents" type="button" :value=content @click="clickHandler2(index)" :data-index="index">
+            <h1 v-for="(content,index) of contents" v-show="index===count">{{content}}</h1>
+        </section>
+
+
+        <section id="Case7">
+            <h1>Case7 事件觸發</h1>
+            <div @click.self="eventCheck" style="border:2px solid red;height:50px">
+                <button style="width:200px;border:1px">
+                    <a href="#">Click ME!</a>
+                </button>
+            </div>
+
+            <div @click.capture="eventCheck" style="border:2px solid blue;height:50px;margin:1rem">
+                <button style="width:200px;border:1px">
+                    <a href="#">Click ME!</a>
+                </button>
+            </div>
+
+            <div @click.capture.stop="eventCheck" style="border:2px solid green;height:50px;margin:1rem">
+                <button style="width:200px;border:1px">
+                    <a href="#">Click ME!</a>
+                </button>
+            </div>
+        </section>
+        <section id="passive" style="display: flex;flex-direction: column;">
+            <h1>passive事件</h1>
+            <div>
+                <h1>No passive</h1>
+                <div @scroll="scrollHandler" style="height: 150px;border:1px solid black;overflow-y: scroll;">
+                    <div style="height:500px"></div>
+                </div>
+            </div>
+            <div>
+                <h1>add .passive</h1>
+                <div @scroll.passive="scrollHandler" style="height: 150px;border:1px solid black;overflow-y: scroll;">
+                    <div style="height:500px"></div>
+                </div>
+            </div>
+        </section>
+        <section id="case7">
+
+            <button @click.ctrl.exact="onCtrlClick">A</button>
+
+        </section>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+        Vue.config.devtools = true;
+    </script>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                msg: "Hello have a nice day!!!",
+                count: 0,
+                count2: 0,
+                count3: 0,
+                count4: 0,
+                items: 4,
+                contents: ["Good", "Normal", "Bad", "Too Bad"]
+            },
+            methods: {
+                clickHandler(event) {
+                    console.log('click', event);
+                    this.c_count = (event.target.dataset.index) * 1
+                    console.log(this.c_count)
+                },
+                clickHandler2(index) {
+                    // console.log('click', event);
+                    this.count = index;
+                    console.log("current: " + this.count)
+                        // return this.count
+                },
+                eventCheck(event) {
+                    console.log(event.target)
+
+                },
+                scrollHandler() {
+                    console.log("Scroll....")
+                },
+                onCtrlClick() {
+                    console.log("Click....")
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>

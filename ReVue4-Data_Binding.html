@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex-ReVue-4-資料綁定</title>
+</head>
+
+<body>
+    <div id="app">
+        <a v-bind:href="link.href" :target="link.target">{{link.content}}</a>
+
+        <p>
+            <input :type="input.type">
+        </p>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+        Vue.config.devtools = true;
+    </script>
+    <script>
+        let vm = new Vue({
+            el: "#app",
+            data() {
+                return {
+
+                    link: {
+                        href: "http://google.com.tw",
+                        target: "_blank",
+                        content: "Link To Google"
+                    },
+                    input: {
+                        type: "checkbox"
+                    }
+
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

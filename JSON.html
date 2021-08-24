@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Vue-表單處理</title>
+    <style>
+        .wrap {
+            margin: 50px;
+            bottom: 2px blue solid;
+        }
+        
+        .box {
+            transition: transform .5s;
+            width: 100px;
+            height: 100px;
+            background-color: blue;
+        }
+        
+        .box.rotate {
+            transform: rotate(45deg);
+        }
+        
+        button {
+            margin: 100px
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="createData">
+        {{data}}
+        <!-- <hr> {{weatherInfo}} -->
+        <hr>
+        <ul>
+            <li v-for="item in weatherInfo">{{item.locationName}}
+                <ul>
+                    <li>{{item.weatherElement}}</li>
+                </ul>
+            </li>
+        </ul>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14 "></script>
+
+    <script>
+        Vue.config.devtools = true;
+    </script>
+
+    <!--- 顯示Vue的開發者工具-->
+    <script>
+        var app = new Vue({
+            el: '#createData',
+            data: function() {
+                return {
+                    data: 'Hello JSON',
+                    weatherInfo: []
+                }
+
+            },
+            methods: {
+
+            },
+
+            mounted: function() {
+                axios.get('https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=CWB-A3FBB9D7-CC7D-4A87-9654-B381864B931C')
+                    // 接收回傳的資訊
+
+                .then(res => {
+                        console.log(res)
+                            // 將資料放到data當中
+                        this.weatherInfo = res.data.records.location;
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    })
+            }
+
+        })
+    </script>
+</body>
+
+
+
+
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Template</title>
+</head>
+
+<body>
+
+    <div id="info">
+        <h2>[1.直接用挎號載入]</h2>
+        <h3>
+            <p>{{html}}</p>
+        </h3>
+
+        <hr>
+        <h2>[2.v-html]</h2>
+        <h3>
+            <p v-html="html">-ABC</p>
+        </h3>
+        <hr>
+        <h2>[3.v-Text]</h2>
+        <h3>
+            <p v-Text="html">-ABC</p>
+        </h3>
+        <!-- </h1>
+        <p v-Text="html">-ABC</p>
+        <hr>
+        <h2> 用鬍子直接接</h2>
+        <p>{{html}} - ABC</p> -->
+
+    </div>
+
+    <!-- <h2 id="show">
+        <p v-once>{{msg}}</p>
+        <p>{{msg}}-ABC</p>
+    </h2> -->
+
+    <hr>
+    <h2>[4.templated的插入] <span> 這是一個直接讀取Script   template的Case</span></h2>
+
+    <div id="showData"></div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+        Vue.config.devtools = true;
+    </script>
+    <script type="text/x-template" id="showstring">
+        <h3><span style='color: green'>this is Test HTML</span></h3>
+    </script>
+    <script>
+        // Html+el template
+        let vm = new Vue({
+                el: "#info",
+                data: {
+                    message: "Hello",
+                    html: "<h3><span style='color: red'>this is Test HTML</span></h3>"
+                },
+                // 盡量不要用箭頭
+                // created: () => {
+                //     console.log(this)
+                // },
+                created: function() {
+                    console.log(this)
+                },
+            })
+            // let show = new Vue({
+            //         el: "#show",
+            //         data: {
+            //             msg: "my test data"
+            //         }
+            //     })
+            // template option(selector)+app.$mount()
+        let vm2 = new Vue({
+            template: "#showstring"
+        })
+
+        vm2.$mount("#showData");
+    </script>
+</body>
+
+</html>

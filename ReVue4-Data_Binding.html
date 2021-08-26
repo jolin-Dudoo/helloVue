@@ -6,15 +6,42 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alex-ReVue-4-資料綁定</title>
+    <style>
+        .f_size {
+            font-size: 48px;
+        }
+        
+        .f_color {
+            color: red
+        }
+        
+        .f_weight {
+            font-weight: bolder;
+        }
+        
+        .f_dec {
+            text-decoration: line-through;
+        }
+    </style>
 </head>
 
 <body>
     <div id="app">
         <a v-bind:href="link.href" :target="link.target">{{link.content}}</a>
-
         <p>
             <input :type="input.type">
         </p>
+        <div>
+            <p :class="txtClass">Class 綁定(物件型)</p>
+            <button @click="delayApply">按下按鈕修字型(1秒後)</button>
+        </div>
+        <div>
+            <p>屬性重疊時...單一值：[href]</p>
+            <a href="www.google.com" :href="link.setLink">連結後面會蓋前面</a>
+            <p>屬性重疊時...複合值[class] , </p>
+            <p class="f_size" :class="txtClass"> [Class] 固定的會被留著 </p>
+            <p class="f_size" :class="txtClass"> [Class] 沒重疊兩個都會保留 {{txtClass.f_color}}</p>
+        </div>
     </div>
 
 
@@ -25,18 +52,40 @@
     <script>
         let vm = new Vue({
             el: "#app",
-            data() {
-                return {
+            data: {
+                link: {
+                    href: "http://google.com.tw",
+                    target: "_blank",
+                    content: "Link To Google",
+                    setLink: "https://developer.mozilla.org/zh-TW/"
+                },
+                input: {
+                    type: "checkbox"
+                },
+                txtClass: {
+                    f_size: false,
+                    f_color: true,
+                    f_weight: false,
+                    f_dec: false,
+                }
+            },
+            methods: {
+                delayApply() {
+                    // 1秒後套用效果
 
-                    link: {
-                        href: "http://google.com.tw",
-                        target: "_blank",
-                        content: "Link To Google"
-                    },
-                    input: {
-                        type: "checkbox"
-                    }
+                    // setTimeout(function() {
+                    //         this.txtClass.f_size = !(this.txtClass.f_size)
+                    //         this.txtClass.f_color = !(this.txtClass.f_color)
+                    //         this.txtClass.f_weight = !(this.txtClass.f_weight)
+                    //         this.txtClass.f_dec = !(this.txtClass.f_dec)
+                    //     }, 3000),
 
+                    setTimeout(() => {
+                        this.txtClass.f_size = !(this.txtClass.f_size)
+                        this.txtClass.f_color = !(this.txtClass.f_color)
+                        this.txtClass.f_weight = !(this.txtClass.f_weight)
+                        this.txtClass.f_dec = !(this.txtClass.f_dec)
+                    }, 1000)
                 }
             }
         })

@@ -5,12 +5,89 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>ReVue8 綜合練習</title>
+    <style>
+        .showInfo {
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .allData {
+            width: 50%;
+            border: 1px dotted darkblue
+        }
+        
+        .filterData {
+            width: 40%;
+        }
+    </style>
 </head>
 
 <body>
     <div id="app">
-        <input type="text" v-model="inputText" @keyup.enter="" inputHandler>
+        <!-- <div><input type="text" v-model="inputText" @keyup.enter="inputHandler"></div> -->
+        <!-- compositionstart / compositionend 主要在處理輸入匡的Enter事件 -->
+        <div>
+            <input type="text" v-model="inputText" @keyup.enter="inputHandler" @compositionstart="cStartHandler" @compositionEnd="cEndHandler">
+        </div>
+        <div class="showInfo">{{inputText}}</div>
+        {{list}}
+        <hr>
+
+        <div class="showInfo">
+            <div class="allData">
+                <ul>
+                    <li v-for="(item,index) of list" :key="item.timestamp">
+                        <!-- 資料編輯畫面 -->
+                        <template v-if="editing===item || editing===index">
+                            <input type="text" v-model="editText">
+                            <button @click="completeHandler">Finished</button>
+                            <button @click="completeHandlerItem">Finished(item)</button>
+                            <button @click="cancelHandler">Cancel</button>
+                        </template>
+                        <!-- 資料列表畫面 -->
+                        <template v-else>
+                            <input type="checkbox" v-model="item.itemStatus" />
+                            <label>{{item.content}}</label>
+                            <button @click="editHandler(index)">Modify</button>
+                            <button @click="deleteHandler(index)"> Delete</button>
+                            <button @click="editHandlerItem(item)">Modify(Item)</button>
+                            <button @click="deleteHandlerItem(item)"> Delete(Item)</button>
+                        </template>
+                    </li>
+                </ul>
+            </div>
+            <div class="filterData">
+                <button @click="show ='all' ">All</button>
+                <button @click="show ='open' ">Open</button>
+                <button @click="show ='done' ">complete</button>
+                <hr>
+                <ul>
+                    <li v-for="(item,index) of filterList" :key="item.timestamp">
+                        <!-- 資料編輯畫面 -->
+                        <template v-if="editing===index ">
+                            <input type="text " v-model="editText ">
+                            <button @click="completeHandler ">Finished</button>
+                            <button @click="cancelHandler ">Cancel</button>
+                        </template>
+                        <!-- 資料列表畫面 -->
+                        <template v-else>
+                            <!-- <input type="checkbox" v-model="item.itemStatus" /> -->
+                            <label>{{item.content}}</label>
+                            <button @click="editHandler(index)">Modify</button>
+                            <button @click="deleteHandler(index)"> Delete</button>
+                            <button @click="editHandlerItem(item)">Modify(Item)</button>
+                            <button @click="deleteHandlerItem(item)"> Delete(Item)</button>
+                        </template>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- 有網址用A , 功能用Button -->
+
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js ">
@@ -22,10 +99,102 @@
             data: {
                 inputText: "",
                 list: [],
+                CompositionStatus: false,
+                editing: null,
+                editText: " ",
+                show: "all "
             },
             methods: {
                 inputHandler() {
-                    console.log(this.inputText)
+                    if (this.CompositionStatus) {
+                        console.log("false: " + this.CompositionStatus)
+                        return false
+                    } else {
+                        console.log("True: " + this.CompositionStatus)
+                        if (this.inputText != " ")
+                            this.list.push({
+                                content: this.inputText,
+                                timeStamp: new Date().getTime(),
+                                itemStatus: false,
+                            })
+                        this.inputText = " "
+                    }
+                },
+                cStartHandler() {
+                    this.CompositionStatus = true
+                },
+                cEndHandler() {
+                    this.CompositionStatus = false
+                },
+                editHandler(index) {
+                    this.editing = index
+                    this.editText = this.list[index].content
+                        // console.log("current index: " + index + "editing : " + this.editing)
+                },
+                deleteHandler(index) {
+                    // index 也是可以用物件取代,(建議可以用物件比較穩)
+                    // Filter: 篩選陣列後重新排列
+
+                    this.list = this.list.filter((item, i) => {
+                        return i != index
+                    })
+
+                    //splice ：根據 index 直接刪除指定的資料
+                    // this.list.splice(index, 1)
+                },
+
+                editHandlerItem(item) {
+                    // console.log("items:" + item)
+                    this.editing = item
+                        // console.log("this.editing:" + item.content)
+                    this.editText = item.content
+                        // console.log("current index: " + index + "editing : " + this.editing)
+                },
+                deleteHandlerItem(item) {
+                    // index 也是可以用物件取代,(建議可以用物件比較穩)
+                    // Filter: 篩選陣列後重新排列
+                    // 判斷等於item則刪除
+
+                    this.list = this.list.filter((target) => {
+                        return target != item
+                    })
+
+                    //splice ：根據 index 直接刪除指定的資料
+                    // this.list.splice(index, 1)
+                },
+                cancelHandler() {
+                    this.editText = " "
+                    this.editing = null
+                },
+                completeHandler() {
+                    // console.log("editing : " + this.editing)
+                    this.list[this.editing].content = this.editText
+                    this.cancelHandler()
+                },
+                completeHandlerItem() {
+                    // console.log("editing : " + this.editing)
+                    this.editing.content = this.editText
+                    this.cancelHandler()
+                },
+            },
+            computed: {
+                filterList() {
+                    // 回傳已經完成過濾的List提供介面顯示
+                    if (this.show === "all") {
+                        return this.list
+                    } else if (this.show === "open") {
+                        //顯示已完成項目
+                        return this.list.filter((item) => {
+                            return item.itemStatus === false
+                        })
+                    } else if (this.show === "done") {
+                        //顯示位完成項目
+                        return this.list.filter((item) => {
+                            return item.itemStatus === true
+                        })
+                    } else {
+                        return []
+                    }
                 }
             }
         })

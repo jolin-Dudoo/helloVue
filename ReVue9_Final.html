@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReVue8 綜合練習</title>
+    <title>ReVue9 Basic Component</title>
     <style>
         .showInfo {
             display: flex;
@@ -29,9 +29,10 @@
         <div id="app">
             <!-- <div><input type="text" v-model="inputText" @keyup.enter="inputHandler"></div> -->
             <!-- compositionstart / compositionend 主要在處理輸入匡的Enter事件 -->
-            <div>
+            <!-- <div>
                 <input type="text" v-model="inputText" @keyup.enter="inputHandler" @compositionstart="cStartHandler" @compositionEnd="cEndHandler">
-            </div>
+            </div> -->
+            <input-component-in-out @custom-input="inputHandler_out" v-model="inputText"></input-component-in-out>
             <div class="showInfo">{{inputText}}</div>
             {{list}}
             <hr>
@@ -59,10 +60,17 @@
                         </li>
                     </ul>
                 </div>
+
+                <!-- component1 組建1  過濾資料-->
                 <div class="filterData">
-                    <button @click="show ='all' ">All</button>
-                    <button @click="show ='open' ">Open</button>
-                    <button @click="show ='done' ">complete</button>
+                    <!-- 因為網頁讀取會全部轉成小寫,所以在命名元件時要注意大小寫 -->
+                    <filter-component @filter="filterHandler"></filter-component>
+                    <!-- 原始寫法  -->
+                    <!--     <div id="filterComponent">
+                        <button @click="show ='all' ">All</button>
+                        <button @click="show ='open' ">Open</button>
+                        <button @click="show ='done' ">complete</button>
+                    </div> -->
                     <hr>
                     <ul>
                         <li v-for="(item,index) of filterList" :key="item.timestamp">
@@ -96,7 +104,72 @@
         </script>
 
         <script>
+            // 模組化元件
+            Vue.component("filter-component", {
+                data: function() {
+                    return {
+                        btnList: [{
+                            text: 'All',
+                            value: 'all'
+                        }, {
+                            text: 'Open',
+                            value: 'open'
+                        }, {
+                            text: 'Done',
+                            value: 'done'
+                        }]
+                    }
+                },
+                template: ` 
+                    <div id="filterComponent">
+                        <button v-for="btn of btnList":key="btn.text" :value="btn.value" @click= "$emit('filter',btn.value)">
+                            {{btn.text}}
+                        </button>
+                    </div>
+                `
+            })
+
+            // 1.外到內(input text(資料) 屬於外面，改變時打給component用)
+            Vue.component("input-component-in-out", {
+                props: ['value'], //外面接V-model 那這邊就要用Value
+                data: function() {
+                    return {
+                        CompositionStatus: false,
+                    }
+                },
+                template: `
+                <div>
+                <input type="text" 
+                v-bind:value="value"
+                v-on:input="$emit('input', $event.target.value)"
+                @compositionstart="cStartHandler" @compositionEnd="cEndHandler"
+                @keyup.enter="inputHandler" >
+                </div>
+                `,
+                methods: {
+                    inputHandler() {
+                        console.log("status:" + this.CompositionStatus)
+                        if (this.CompositionStatus) {
+                            return false
+                        } else {
+                            this.$emit('custom-input')
+                        }
+                    },
+                    cStartHandler() {
+                        this.CompositionStatus = true
+                    },
+                    cEndHandler() {
+                        this.CompositionStatus = false
+                    },
+                }
+            })
+
+            // 2.內到外(資料在裡面，改變時時打給外面使用)
+            Vue.component("input-component-out-in", {
+
+            })
             new Vue({
+
                 el: "#app",
                 data: {
                     inputText: "",
@@ -107,26 +180,21 @@
                     show: "all "
                 },
                 methods: {
-                    inputHandler() {
-                        if (this.CompositionStatus) {
-                            console.log("false: " + this.CompositionStatus)
-                            return false
-                        } else {
-                            console.log("True: " + this.CompositionStatus)
-                            if (this.inputText != " ")
-                                this.list.push({
-                                    content: this.inputText,
-                                    timeStamp: new Date().getTime(),
-                                    itemStatus: false,
-                                })
-                            this.inputText = " "
-                        }
+                    filterHandler(value) {
+                        this.show = value
+                        console.log(value)
+                            // filterList()
                     },
-                    cStartHandler() {
-                        this.CompositionStatus = true
-                    },
-                    cEndHandler() {
-                        this.CompositionStatus = false
+                    inputHandler_out() {
+                        console.log(this.inputText)
+                        this.list.push({
+                            content: this.inputText,
+                            timeStamp: new Date().getTime(),
+                            itemStatus: false,
+                        })
+                        console.log("a :" + this.inputText)
+                        this.inputText = ""
+                        console.log("B :" + this.inputText)
                     },
                     editHandler(index) {
                         this.editing = index

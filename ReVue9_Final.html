@@ -20,6 +20,9 @@
         .filterData {
             width: 40%;
         }
+        .showInfo{
+        text-align: left;
+        }
     </style>
 </head>
 
@@ -32,6 +35,7 @@
             <!-- <div>
                 <input type="text" v-model="inputText" @keyup.enter="inputHandler" @compositionstart="cStartHandler" @compositionEnd="cEndHandler">
             </div> -->
+            <h2>輸入資訊(Enter輸入)</h2>
             <input-component-in-out @custom-input="inputHandler_out" v-model="inputText"></input-component-in-out>
             <div class="showInfo">{{inputText}}</div>
             {{list}}
@@ -64,6 +68,7 @@
                 <!-- component1 組建1  過濾資料-->
                 <div class="filterData">
                     <!-- 因為網頁讀取會全部轉成小寫,所以在命名元件時要注意大小寫 -->
+                    <h3>請選擇要顯示的資料</h3>
                     <filter-component @filter="filterHandler"></filter-component>
                     <!-- 原始寫法  -->
                     <!--     <div id="filterComponent">

@@ -36,7 +36,8 @@
                 <input type="text" v-model="inputText" @keyup.enter="inputHandler" @compositionstart="cStartHandler" @compositionEnd="cEndHandler">
             </div> -->
             <h2>輸入資訊(Enter輸入)</h2>
-            <input-component-in-out @custom-input="inputHandler_out" v-model="inputText"></input-component-in-out>
+            <label>由外到內綁定</label><input-component-out-in @custom-input="inputHandler_out" v-model="inputText"></input-component-out-in>
+            <label>由內到外綁定</label><input-component-in-out @custom-input="inputHandler_in" v-model="inputText"></input-component-in-out>
             <div class="showInfo">{{inputText}}</div>
             {{list}}
             <hr>
@@ -44,24 +45,8 @@
             <div class="showInfo">
                 <div class="allData">
                     <ul>
-                        <li v-for="(item,index) of list" :key="item.timestamp">
-                            <!-- 資料編輯畫面 -->
-                            <template v-if="editing===item || editing===index">
-                                <input type="text" v-model="editText">
-                                <button @click="completeHandler">Finished</button>
-                                <button @click="completeHandlerItem">Finished(item)</button>
-                                <button @click="cancelHandler">Cancel</button>
-                            </template>
-                            <!-- 資料列表畫面 -->
-                            <template v-else>
-                                <input type="checkbox" v-model="item.itemStatus" />
-                                <label>{{item.content}}</label>
-                                <button @click="editHandler(index)">Modify</button>
-                                <button @click="deleteHandler(index)"> Delete</button>
-                                <button @click="editHandlerItem(item)">Modify(Item)</button>
-                                <button @click="deleteHandlerItem(item)"> Delete(Item)</button>
-                            </template>
-                        </li>
+                        <li is="list-item-component" v-for="item of filterList" :key="item.timestamp" :item="item" :editing="editing" @delete="deleteHandlerItem" @edit="editHandlerItem" @complete="completeHandler" @cancel="cancelHandler">//指定component
+                        </li> 
                     </ul>
                 </div>
 
@@ -78,23 +63,8 @@
                     </div> -->
                     <hr>
                     <ul>
-                        <li v-for="(item,index) of filterList" :key="item.timestamp">
-                            <!-- 資料編輯畫面 -->
-                            <template v-if="editing===index ">
-                                <input type="text " v-model="editText ">
-                                <button @click="completeHandler ">Finished</button>
-                                <button @click="cancelHandler ">Cancel</button>
-                            </template>
-                            <!-- 資料列表畫面 -->
-                            <template v-else>
-                                <!-- <input type="checkbox" v-model="item.itemStatus" /> -->
-                                <label>{{item.content}}</label>
-                                <button @click="editHandler(index)">Modify</button>
-                                <button @click="deleteHandler(index)"> Delete</button>
-                                <button @click="editHandlerItem(item)">Modify(Item)</button>
-                                <button @click="deleteHandlerItem(item)"> Delete(Item)</button>
-                            </template>
-                        </li>
+                        <li is="list-item-component" v-for="item of filterList" :key="item.timestamp" :item="item" :editing="editing" @delete="deleteHandlerItem" @edit="editHandlerItem" @complete="completeHandler" @cancel="cancelHandler">//指定component
+                        </li> 
                     </ul>
                 </div>
 
@@ -135,7 +105,7 @@
             })
 
             // 1.外到內(input text(資料) 屬於外面，改變時打給component用)
-            Vue.component("input-component-in-out", {
+            Vue.component("input-component-out-in", {
                 props: ['value'], //外面接V-model 那這邊就要用Value
                 data: function() {
                     return {
@@ -157,7 +127,7 @@
                         if (this.CompositionStatus) {
                             return false
                         } else {
-                            this.$emit('custom-input')
+                            this.$emit('custom-input') //Enter的input 事件
                         }
                     },
                     cStartHandler() {
@@ -170,9 +140,113 @@
             })
 
             // 2.內到外(資料在裡面，改變時時打給外面使用)
-            Vue.component("input-component-out-in", {
+            Vue.component("input-component-in-out", {
+                props: ['value'], //外面接V-model 那這邊就要用Value
+                data: function() {
+                    return {
+                        inputText:"",
+                        CompositionStatus: false,
+                    }
+                },
+                template: `
+                <div>
+                <input type="text" 
+                v-model="inputText"
+                @compositionstart="cStartHandler" @compositionEnd="cEndHandler"
+                @keyup.enter="inputHandler" >
+                </div>
+                `,
+                methods: {
+                    inputHandler() {
+                        console.log("status:" + this.CompositionStatus)
+                        if (this.CompositionStatus) {
+                            return false
+                        } else {
+                            this.$emit('custom-input',this.inputText)
+                        }
+                        this.inputText=""
+                    },
+                    cStartHandler() {
+                        this.CompositionStatus = true
+                    },
+                    cEndHandler() {
+                        this.CompositionStatus = false
+                    },
+                }
 
             })
+            
+            Vue.component("list-item-component",{
+                props:["item","editing"],
+                data(){
+                    return {
+                        editText:""
+                    }
+                },
+                template:`
+                <li>
+                    <!-- 資料編輯畫面 -->
+                    <template v-if="editing===item">
+                        <input type="text " v-model="editText">
+                        <button @click="completeHandler ">Finished</button>
+                        <button @click="cancelHandler ">Cancel</button>
+                    </template>
+                    <!-- 資料列表畫面 -->
+                    <template v-else>
+                        <!-- <input type="checkbox" v-model="item.itemStatus" /> -->
+                        <label>{{item.content}}</label>
+                        <button @click="editHandler(index)">Modify</button>
+                        <button @click="deleteHandler(index)"> Delete</button>
+                        <button @click="editHandlerItem(item)">Modify(Item)</button>
+                        <button @click="deleteHandlerItem(item)"> Delete(Item)</button>
+                    </template>
+                </li>
+                `,
+                methods:{
+                    editHandler(index) {
+                        this.editing = index
+                        this.editText = this.list[index].content
+                            // console.log("current index: " + index + "editing : " + this.editing)
+                    },
+                    editHandlerItem(item) {
+                        // console.log("items:" + item)
+                        // this.editing = item
+                            // console.log("this.editing:" + item.content)
+                            this.$emit('edit',item)
+                        this.editText = item.content
+                            // console.log("current index: " + index + "editing : " + this.editing)
+                    },
+                    deleteHandlerItem(item) {
+                        // index 也是可以用物件取代,(建議可以用物件比較穩)
+                        // Filter: 篩選陣列後重新排列
+                        // 判斷等於item則刪除
+
+                        // this.list = this.list.filter((target) => {
+                        //     return target != item
+                        // })
+
+                        //splice ：根據 index 直接刪除指定的資料
+                        // this.list.splice(index, 1)
+
+                        this.$emit('delete',item)
+                    },
+                    cancelHandler() {
+                        this.editText = ""
+                        this.$emit('cancel')
+                    },
+                    completeHandler() {
+                        this.$emit('complete',this.editText)
+                        this.cancelHandler()
+                    },
+                    completeHandlerItem() {
+                        // console.log("editing : " + this.editing)
+                        this.editing.content = this.editText
+                        this.cancelHandler()
+                    },
+
+                }
+            })
+            
             new Vue({
 
                 el: "#app",
@@ -201,22 +275,24 @@
                         this.inputText = ""
                         console.log("B :" + this.inputText)
                     },
+                    inputHandler_in(value) {
+                        console.log(this.inputText)
+                        this.list.push({
+                            
+                            timeStamp: new Date().getTime(),
+                            itemStatus: false,
+                            content: value,
+                        })
+                        // console.log("a :" + this.inputText)
+                        // this.inputText = ""
+                        // console.log("B :" + this.inputText)
+                    },
                     editHandler(index) {
                         this.editing = index
                         this.editText = this.list[index].content
                             // console.log("current index: " + index + "editing : " + this.editing)
                     },
-                    deleteHandler(index) {
-                        // index 也是可以用物件取代,(建議可以用物件比較穩)
-                        // Filter: 篩選陣列後重新排列
-
-                        this.list = this.list.filter((item, i) => {
-                            return i != index
-                        })
-
-                        //splice ：根據 index 直接刪除指定的資料
-                        // this.list.splice(index, 1)
-                    },
+                   
 
                     editHandlerItem(item) {
                         // console.log("items:" + item)
@@ -238,13 +314,14 @@
                         // this.list.splice(index, 1)
                     },
                     cancelHandler() {
-                        this.editText = " "
+                        this.editText = ""
                         this.editing = null
                     },
-                    completeHandler() {
+                    completeHandler(value) {
                         // console.log("editing : " + this.editing)
-                        this.list[this.editing].content = this.editText
-                        this.cancelHandler()
+                        // this.list[this.editing].content = this.editText
+                        // this.cancelHandler()
+                        this.editing.content=value
                     },
                     completeHandlerItem() {
                         // console.log("editing : " + this.editing)
